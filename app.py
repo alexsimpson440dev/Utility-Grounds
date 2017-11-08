@@ -1,5 +1,6 @@
 #from src.server import app
 import os
+import psycopg2
 from flask import Flask, render_template, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 

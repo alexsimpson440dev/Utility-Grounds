@@ -34,3 +34,8 @@ class Database():
         session = self._get_session()
         session.add(user)
         session.commit()
+
+    def _get_user(self, email):
+        session = self._get_session()
+        for user in session.query(User).filter(User.email_address == email):
+            return user

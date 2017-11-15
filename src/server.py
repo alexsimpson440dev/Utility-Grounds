@@ -8,12 +8,12 @@ app.secret_key = 'the moo goes cow'
 
 @app.route('/')
 @app.route('/index')
-@app.route('/index.html', methods=["GET"])
+@app.route('/index.html', methods=['get'])
 def index():
     return render_template('index.html')
 
-@app.route('/signup', methods=["GET", "POST"])
-@app.route('/signup.html', methods=["GET"])
+@app.route('/signup', methods=['post', 'get'])
+@app.route('/signup.html', methods=['get'])
 def signup():
     if request.method == 'POST':
         first_name = request.form.get('first_name')
@@ -31,10 +31,28 @@ def signup():
 
         return render_template('index.html')
     else:
-        return render_template("signup.html")
+        return render_template('signup.html')
+
+@app.route('/login', methods=['post', 'get'])
+@app.route('/login.html', methods=['get'])
+def user_login():
+    if request.method == 'POST':
+        email_address = request.form.get('email_address')
+        print('Email from form: ' + email_address)
+        auth = MANAGER.auth_user(email_address)
+        print('Retrieved Email: ' + auth)
+        if auth == email_address:
+            redirect("index.html")
+        else:
+            return render_template("signup.html")
+
+    else:
+        return render_template("login.html")
 
 def sign_in(email_address):
     session['email'] = email_address
 
+def sign_out():
+    del session['email']
 if __name__ == '__main__':
     app.run(port=9999, debug=True)

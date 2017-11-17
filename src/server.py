@@ -38,11 +38,9 @@ def signup():
 def user_login():
     if request.method == 'POST':
         email_address = request.form.get('email_address')
-        print('Email from form: ' + email_address)
-        auth = MANAGER.auth_user(email_address)
-        print('Retrieved Email: ' + auth)
+        auth = str(MANAGER.auth_user(email_address, password))
         if auth == email_address:
-            redirect("index.html")
+            return redirect("index.html")
         else:
             return render_template("signup.html")
 

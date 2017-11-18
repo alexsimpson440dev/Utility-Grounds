@@ -43,8 +43,8 @@ class Database():
         session.commit()
 
     # queries
-    def _get_user(self, email):
+    def _validate_user_login(self, email, password):
         session = self._get_session()
         for user in session.query(User)\
-                .filter(User.email_address == email):
-            return user.email_address
+                .filter(User.email_address == email, User.password == password):
+            return user.email_address, user.password

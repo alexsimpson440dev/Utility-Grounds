@@ -16,6 +16,10 @@ class DBManager():
         hashedpassword = str(self.database._validate_user_password(email))
         print("Manager:" + userEmail + hashedpassword)
         check = self._check_pw_hash(password, hashedpassword)
+        if check is True:
+            print("yass")
+        else:
+            print("nahhhh")
 
     def _hash_pw(self, password):
         hashedpw = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())

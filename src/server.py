@@ -19,7 +19,7 @@ def signup():
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         email_address = request.form.get('email_address')
-        password = request.form.get('password')
+        password = request.form.get('password').encode('utf8')
 
         try:
             MANAGER.add_user(first_name, last_name, email_address, password)
@@ -38,7 +38,7 @@ def signup():
 def user_login():
     if request.method == 'POST':
         email_address = request.form.get('email_address')
-        password = request.form.get('password')
+        password = request.form.get('password').encode('utf8')
         auth = str(MANAGER.auth_user(email_address, password))
         print(auth)
         if auth == email_address + password:

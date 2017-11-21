@@ -42,9 +42,16 @@ class Database():
         session.add(user)
         session.commit()
 
-    # queries
-    def _validate_user_login(self, email, password):
+    # queries for the users email
+    def _validate_user_email(self, email):
         session = self._get_session()
         for user in session.query(User)\
-                .filter(User.email_address == email, User.password == password):
-            return user.email_address, user.password
+                .filter(User.email_address == email):
+            return user.email_address
+
+    # queries for the users password
+    def _validate_user_password(self, email):
+        session = self._get_session()
+        for user in session.query(User)\
+                .filter(User.email_address == email):
+            return user.password

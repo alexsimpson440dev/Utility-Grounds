@@ -12,15 +12,10 @@ class DBManager():
         self.database._add_user(user)
 
     def auth_user(self, email, password):
-        user = self.database._validate_user_login(email, password)
-        print(str(user[1]))
-        hashedpw = user[1]
-        check = self._check_pw_hash(password, hashedpw)
-        user = user[0] + user[1]
-        if check is True:
-            return user
-        else:
-            return "Password is not correct"
+        userEmail = self.database._validate_user_email(email)
+        hashedpassword = str(self.database._validate_user_password(email))
+        print("Manager:" + userEmail + hashedpassword)
+        check = self._check_pw_hash(password, hashedpassword)
 
     def _hash_pw(self, password):
         hashedpw = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())

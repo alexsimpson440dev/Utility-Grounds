@@ -19,7 +19,7 @@ def signup():
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         email_address = request.form.get('email_address')
-        password = request.form.get('password').encode('utf8')
+        password = request.form.get('password')
 
         try:
             MANAGER.add_user(first_name, last_name, email_address, password)
@@ -38,15 +38,15 @@ def signup():
 def user_login():
     if request.method == 'POST':
         email_address = request.form.get('email_address')
-        password = request.form.get('password').encode('utf8')
-        auth = str(MANAGER.auth_user(email_address, password))
-        print(auth)
-        if auth == email_address + password:
+        password = request.form.get('password')
+        auth = MANAGER.auth_user(email_address, password)
+        if auth is True:
             print("login success")
             sign_in(email_address)
             return redirect("index.html")
         else:
-            return render_template("signup.html")
+            print("email or password is incorrect")
+            return render_template("login.html")
 
     else:
         return render_template("login.html")

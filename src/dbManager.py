@@ -2,31 +2,30 @@ from src.database import Database
 from src.user import User
 import bcrypt
 
+# Database manager class
 class DBManager():
     def __init__(self):
         self.database = Database()
 
+    # adds user to the database after hashing the password
+    # prevents an unsecured password from being entered in
     def add_user(self, first_name, last_name, email_address, password):
-        hashedpw = self._hash_pw(password)
+        hashedpw = self._hash_pw(password.encode('utf-8'))
         user = User(first_name, last_name, email_address, hashedpw)
         self.database._add_user(user)
 
+    # validates the users password against their email
+    # by retrieving the hashed password, then checking
+    # the password entered by the user
     def auth_user(self, email, password):
-        userEmail = self.database._validate_user_email(email)
-        hashedpassword = str(self.database._validate_user_password(email))
-        print("Manager:" + userEmail + hashedpassword)
-        check = self._check_pw_hash(password, hashedpassword)
+        hashedpassword = self.database._validate_user_password(email)
+        check = bcrypt.checkpw(password.encode('utf-8'), hashedpassword)
         if check is True:
-            print("yass")
-        else:
-            print("nahhhh")
-
-    def _hash_pw(self, password):
-        hashedpw = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
-        return hashedpw
-
-    def _check_pw_hash(self, password, hashedpw):
-        if bcrypt.checkpw(password, hashedpw):
             return True
         else:
             return False
+
+    # hashes the users password using bcrypt
+    def _hash_pw(self, password):
+        hashedpw = bcrypt.hashpw(password, bcrypt.gensalt())
+        return hashedpw

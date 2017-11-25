@@ -10,6 +10,9 @@ app.secret_key = 'the moo goes cow'
 @app.route('/index')
 @app.route('/index.html', methods=['get'])
 def index():
+    if request.method == 'POST':
+        sign_out()
+
     return render_template('index.html')
 
 @app.route('/signup', methods=['post', 'get'])
@@ -53,8 +56,13 @@ def user_login():
 
 def sign_in(email_address):
     session['email'] = email_address
+    print('signing in: ' + session['email'])
 
+@app.route('/logout', methods=['post', 'get'])
 def sign_out():
+    print('signing out: ' + session['email'])
     del session['email']
+    return redirect('login.html')
+
 if __name__ == '__main__':
     app.run(port=9999, debug=True)

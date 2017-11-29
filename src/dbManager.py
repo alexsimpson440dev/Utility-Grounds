@@ -1,5 +1,6 @@
 from src.database import Database
 from src.user import User
+from src.bills import Bills
 import bcrypt
 
 # Database manager class
@@ -13,6 +14,11 @@ class DBManager():
         hashedpw = self._hash_pw(password.encode('utf-8'))
         user = User(first_name, last_name, email_address, hashedpw)
         self.database._add_user(user)
+
+    # adds a bill to the database from html
+    def add_bill(self, date_added, electricity, gas, internet, city, total, due_date):
+        bill = Bills(date_added, electricity, gas, internet, city, total, due_date)
+        self.database._add_bill(bill)
 
     # validates the users password against their email
     # by retrieving the hashed password, then checking

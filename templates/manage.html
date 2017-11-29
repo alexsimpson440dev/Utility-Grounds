@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Signup</title>
+    <title>Manage</title>
 </head>
 <body>
-    <form action="/signup" method="post">
-        <label for="first_name">First Name</label><br />
-        <input type="text" name="first_name" id="first_name"><br />
+    <form action="/manage" method="post">
+        <label for="date_added">Date</label><br />
+        <input type="date" name="date_added" id="date_added"><br />
         <br />
-        <label for="last_name">Last Name</label><br />
-        <input type="text" name="last_name" id="last_name"><br />
+        <label for="electricity">Electricity</label><br />
+        <input type="text" name="electricity" id="electricity"><br />
         <br />
         <label for="email_address">Email</label><br />
         <input type="text" name="email_address" id="email_address"><br />
@@ -21,5 +21,9 @@
         <button type="submit" name="signUpBtn">Sign Up</button>
         <p>Already a member? <a href="login.html">Login</a></p>
     </form>
+
+        {% if bill %}
+            <h4>Bills: {{bill}}</h4>
+        {% endif %}
 </body>
 </html>

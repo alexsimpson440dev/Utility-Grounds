@@ -1,6 +1,7 @@
 import sqlite3
 from src.user import User
-from sqlalchemy import Table, MetaData, Column, Integer, String, ForeignKey, create_engine
+from src.bills import Bills
+from sqlalchemy import Table, MetaData, Column, Integer, Float, String, Date, ForeignKey, create_engine
 from sqlalchemy.orm import mapper, sessionmaker, relationship
 METADATA = MetaData()
 
@@ -11,6 +12,7 @@ class Database():
     def __init__(self, connection_string="sqlite:///groundsDB.sqlite3"):
         self.sql_file = connection_string
         self.users = self._map_user()
+        self.bills = self._map_bills()
         self.engine = self._get_connection()
         METADATA.create_all(bind=self.engine)
 
@@ -26,6 +28,20 @@ class Database():
         mapper(User, users)
         return users
 
+    def _map_bills(self):
+        bills = Table('Bills', METADATA,
+                      Column('bill_id', Integer, primary_key=True),
+                      Column('date_added', Date),
+                      Column('electricity', Float),
+                      Column('gas', Float),
+                      Column('internet', Float),
+                      Column('city', Float),
+                      Column('total', Float),
+                      Column('due_date', Date)
+                      )
+        mapper(Bills, bills)
+        return bills
+
     # gets connection through sqlalchemy with the sql_file connection string
     def _get_connection(self):
         engine = create_engine(self.sql_file)
@@ -40,6 +56,12 @@ class Database():
     def _add_user(self, user):
         session = self._get_session()
         session.add(user)
+        session.commit()
+
+    # adds a new bill to the database
+    def _add_bill(self, bill):
+        session = self._get_session()
+        session.add(bill)
         session.commit()
 
     # queries for the users email

@@ -1,10 +1,12 @@
 from src.dbManager import DBManager
+import os
 from flask import Flask, render_template, redirect, request, session
 
 MANAGER = DBManager()
 
 app = Flask(__name__, '/static', static_folder='../static', template_folder='../templates')
-app.secret_key = 'the moo goes cow'
+app.secret_key = os.urandom(24)
+bills = list()
 
 @app.route('/')
 @app.route('/index')
@@ -53,6 +55,22 @@ def user_login():
 
     else:
         return render_template("login.html")
+
+# adding bills
+@app.route('/manage/<bill>', methods=['post', 'get'])
+@app.route('/manage.html', methods=['get'])
+def add_bill(bill=None):
+    # creates a bills list for testing. will add to database
+    # if post is requested, a bill will be added to the list
+    # else the bills will be retrieved
+    if request.method == 'POST':
+        count = len(bills) + 1
+        bills.append('Bill' + str(count))
+        print(bills)
+        return render_template("manage.html", bill=bills)
+    else:
+        print(bills)
+        return render_template("manage.html")
 
 def sign_in(email_address):
     session['email'] = email_address

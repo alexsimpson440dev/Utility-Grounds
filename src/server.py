@@ -37,4 +37,4 @@ def sign_in(email_address):
     session['email'] = email_address
 
 if __name__ == '__main__':
-    app.run(port=9999, debug=True)
+    app.run(port=9999)

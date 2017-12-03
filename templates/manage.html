@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage</title>
+</head>
+<body>
+    <form action="/manage" method="post">
+        <label for="date_added">Date</label><br />
+        <input type="date" name="date_added" id="date_added"><br />
+        <br />
+        <label for="electricity">Electricity</label><br />
+        <input type="text" name="electricity" id="electricity"><br />
+        <br />
+        <label for="gas">Gas</label><br />
+        <input type="text" name="gas" id="gas"><br />
+        <br />
+        <label for="internet">Internet</label><br />
+        <input type="text" name="internet" id="internet"><br />
+        <br />
+        <label for="city">City</label><br />
+        <input type="text" name="city" id="city"><br />
+        <br />
+        <label for="due_date">Due Date</label><br />
+        <input type="text" name="due_date" id="due_date"><br />
+        <br />
+        <button type="submit" name="submit_bill">Submit</button>
+    </form>
+
+        {% if bill %}
+            <h4>Bills: {{bill}}</h4>
+        {% endif %}
+</body>
+</html>

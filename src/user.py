@@ -11,5 +11,6 @@ class User(object):
                 '{ea}:{pw}' \
                 .format(id=self.user_id, fn=self.first_name, ln=self.last_name,
                         ea=self.email_address, pw=self.password)
+
     def __str__(self):
         return self.__repr__()

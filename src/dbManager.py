@@ -35,3 +35,7 @@ class DBManager():
     def _hash_pw(self, password):
         hashedpw = bcrypt.hashpw(password, bcrypt.gensalt())
         return hashedpw
+
+    def _get_bills(self):
+        bills = self.database._get_bills()
+        return bills

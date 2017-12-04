@@ -10,12 +10,14 @@ class Bills(object):
         self.bill_id = bill_id
 
     def __repr__(self):
-        return '{id}:{da}\n' \
-               '{e} \n' \
-               '{g} \n' \
-               '{i} \n' \
-               '{c} \n' \
-               '{t}:{dd}' \
+        return '{id},' \
+               '{da},' \
+               '{e},' \
+               '{g},' \
+               '{i},' \
+               '{c},' \
+               '{t},' \
+               '{dd}' \
                 .format(id=self.bill_id, da=self.date_added,
                         e=self.electricity,
                         g=self.gas,

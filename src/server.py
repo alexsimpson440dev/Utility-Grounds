@@ -1,6 +1,6 @@
 from src.dbManager import DBManager
-import os
-from flask import Flask, render_template, redirect, request, session
+import os, datetime
+from flask import Flask, render_template, redirect, request, session, url_for
 
 MANAGER = DBManager()
 
@@ -57,20 +57,38 @@ def user_login():
         return render_template("login.html")
 
 # adding bills
-@app.route('/manage/<bill>', methods=['post', 'get'])
+@app.route('/manage', methods=['post', 'get'])
 @app.route('/manage.html', methods=['get'])
-def add_bill(bill=None):
+def add_bill():
     # creates a bills list for testing. will add to database
     # if post is requested, a bill will be added to the list
     # else the bills will be retrieved
     if request.method == 'POST':
-        count = len(bills) + 1
-        bills.append('Bill' + str(count))
-        print(bills)
-        return render_template("manage.html", bill=bills)
-    else:
-        print(bills)
-        return render_template("manage.html")
+        date_added = request.form.get('date_added')
+        electricity = request.form.get('electricity')
+        gas = request.form.get('gas')
+        internet = request.form.get('internet')
+        city = request.form.get('city')
+        total = float(electricity) + float(gas) + float(internet) + float(city)
+        due_date = request.form.get('due_date')
+
+
+        try:
+            MANAGER.add_bill(date_added, electricity, gas, internet, city, total, due_date)
+            bills = MANAGER._get_bills()
+            for number in bills:
+                bill = str(number)
+                b_id,date_added,electricity,gas,internet,city,total,due_date = bill.split(',')
+                return render_template("manage.html", date_added=date_added, electricity=electricity, gas=gas, internet=internet,
+                                   city=city, total=total, due_date=due_date)
+
+        except RuntimeError:
+            print('cannot add bill')
+            return redirect("manage.html")
+
+    if request.method == 'GET':
+        bills = MANAGER._get_bills()
+        return render_template("manage.html", bills = bills)
 
 def sign_in(email_address):
     session['email'] = email_address

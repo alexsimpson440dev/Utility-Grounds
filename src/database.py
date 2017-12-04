@@ -31,13 +31,13 @@ class Database():
     def _map_bills(self):
         bills = Table('Bills', METADATA,
                       Column('bill_id', Integer, primary_key=True),
-                      Column('date_added', Date),
+                      Column('date_added', String),
                       Column('electricity', Float),
                       Column('gas', Float),
                       Column('internet', Float),
                       Column('city', Float),
                       Column('total', Float),
-                      Column('due_date', Date)
+                      Column('due_date', String)
                       )
         mapper(Bills, bills)
         return bills
@@ -69,6 +69,7 @@ class Database():
         session = self._get_session()
         for user in session.query(User)\
                 .filter(User.email_address == email):
+            session.commit()
             return user.email_address
 
     # queries for the users password
@@ -76,4 +77,13 @@ class Database():
         session = self._get_session()
         for user in session.query(User)\
                 .filter(User.email_address == email):
+            session.commit()
             return user.password
+
+    def _get_bills(self):
+        bill_list = list()
+        session = self._get_session()
+        for bills in session.query(Bills).all():
+            bill_list.append(bills)
+        return bill_list
+

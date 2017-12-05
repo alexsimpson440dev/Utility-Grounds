@@ -81,9 +81,12 @@ class Database():
             return user.password
 
     def _get_bills(self):
-        bill_list = list()
+        bill_dict = dict()
         session = self._get_session()
-        for bills in session.query(Bills).all():
-            bill_list.append(bills)
-        return bill_list
+        for bid, da, e, g, i, c, t, dd in session.query(Bills.bill_id, Bills.date_added, Bills.electricity, Bills.gas, Bills.internet,
+                                   Bills.city, Bills.total, Bills.due_date):
+            bill_dict[bid] = da, e, g, i, c, t, dd
+        print(bill_dict)
+        return bill_dict
+
 

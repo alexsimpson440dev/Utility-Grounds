@@ -37,18 +37,11 @@
                 <th style="border: 1px solid black">Total</th>
                 <th style="border: 1px solid black">Due Date</th>
             </tr>
-            {% for key, value in bills.items() %}
-                {% set da,e,g,i,c,t,dd = value.split(', ') %}
-                <tr>
-                    <td style="border: 1px solid black">{{da}}</td>
-                    <td style="border: 1px solid black">{{e}}</td>
-                    <td style="border: 1px solid black">{{g}}</td>
-                    <td style="border: 1px solid black">{{i}}</td>
-                    <td style="border: 1px solid black">{{c}}</td>
-                    <td style="border: 1px solid black">{{t}}</td>
-                    <td style="border: 1px solid black">{{d}}</td>
-                </tr>
+            <tr>
+            {% for value in bills %}
+                <td style="border: 1px solid black">{{value}}</td>
             {% endfor %}
+            </tr>
         </table>
 </body>
 </html>

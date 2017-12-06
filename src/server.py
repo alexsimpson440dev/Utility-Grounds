@@ -88,6 +88,8 @@ def add_bill():
 
     if request.method == 'GET':
         bills = MANAGER._get_bills()
+        for value in bills:
+            print(value)
         return render_template("manage.html", bills = bills)
 
 def sign_in(email_address):

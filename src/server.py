@@ -75,7 +75,8 @@ def add_bill():
         gas = request.form.get('gas')
         internet = request.form.get('internet')
         city = request.form.get('city')
-        total = float(electricity) + float(gas) + float(internet) + float(city)
+
+        total = float(electricity) + float(gas) + float(internet)
         due_date = request.form.get('due_date')
 
         # tries to add a bill to the database
@@ -83,7 +84,13 @@ def add_bill():
         # this will then show an updated view of the bills
         try:
             MANAGER.add_bill(date_added, electricity, gas, internet, city, total, due_date)
-            return redirect("manage.html")
+            return redirect("/manage")    # getting this route has a list of bills
+            # bills = MANAGER._get_bills()
+            # for number in bills:
+            #     bill = str(number)
+            #     b_id,date_added,electricity,gas,internet,city,total,due_date = bill.split(',')
+            #     return render_template("manage.html", date_added=date_added, electricity=electricity, gas=gas, internet=internet,
+            #                        city=city, total=total, due_date=due_date)
 
         # if the add fails, this will catch the error and redirect the user back to the manage.html page
         except RuntimeError:

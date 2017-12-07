@@ -10,5 +10,13 @@
         <input type="password" name="password" placeholder="Password"><br />
         <input type="submit" value="login">
     </form>
+    <br>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for messages in messages %}
+                <h5>{{message}}</h5>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 </body>
 </html>

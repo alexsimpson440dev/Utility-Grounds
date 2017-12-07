@@ -81,7 +81,8 @@ class Database():
             return user.password
 
     def _get_bills(self):
-        bill_dict = list()
+        counter = 1
+        bills_dict = dict()
         session = self._get_session()
         return session.query(Bills.bill_id, Bills.date_added, Bills.electricity, Bills.gas, Bills.internet,        Bills.city, Bills.total, Bills.due_date)
         #     bill_dict.append(da)

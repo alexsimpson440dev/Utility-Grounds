@@ -37,11 +37,13 @@
                 <th style="border: 1px solid black">Total</th>
                 <th style="border: 1px solid black">Due Date</th>
             </tr>
-            <tr>
-            {% for value in bills %}
-                <td style="border: 1px solid black">{{value}}</td>
-            {% endfor %}
-            </tr>
+                    {% for key in bills %}
+                        <tr>
+                        {% for value in bills[key] %}
+                            <td style="border: 1px solid black">{{value}}</td>
+                        {% endfor %}
+                        </tr>
+                    {% endfor %}
         </table>
 </body>
 </html>

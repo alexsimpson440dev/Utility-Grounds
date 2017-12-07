@@ -76,11 +76,7 @@ def add_bill():
         try:
             MANAGER.add_bill(date_added, electricity, gas, internet, city, total, due_date)
             bills = MANAGER._get_bills()
-            for number in bills:
-                bill = str(number)
-                b_id,date_added,electricity,gas,internet,city,total,due_date = bill.split(',')
-                return render_template("manage.html", date_added=date_added, electricity=electricity, gas=gas, internet=internet,
-                                   city=city, total=total, due_date=due_date)
+            return render_template("manage.html", bills = bills)
 
         except RuntimeError:
             print('cannot add bill')
@@ -88,8 +84,6 @@ def add_bill():
 
     if request.method == 'GET':
         bills = MANAGER._get_bills()
-        for value in bills:
-            print(value)
         return render_template("manage.html", bills = bills)
 
 def sign_in(email_address):

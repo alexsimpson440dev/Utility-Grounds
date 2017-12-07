@@ -75,8 +75,7 @@ def add_bill():
 
         try:
             MANAGER.add_bill(date_added, electricity, gas, internet, city, total, due_date)
-            bills = MANAGER._get_bills()
-            return render_template("manage.html", bills = bills)
+            return redirect("manage.html")
 
         except RuntimeError:
             print('cannot add bill')

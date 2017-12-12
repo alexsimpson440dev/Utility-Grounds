@@ -1,4 +1,5 @@
 import sqlite3
+import os
 from src.user import User
 from src.bills import Bills
 from sqlalchemy import Table, MetaData, Column, Integer, Float, String, Date, ForeignKey, create_engine
@@ -9,7 +10,7 @@ METADATA = MetaData()
 class Database():
     # constructor, declares connection string within
     # sets sql_file, users, and engine
-    def __init__(self, connection_string="sqlite:///groundsDB.sqlite3"):
+    def __init__(self, connection_string=os.environ['DATABASE_URL']):
         self.sql_file = connection_string
         self.users = self._map_user()
         self.bills = self._map_bills()

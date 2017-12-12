@@ -12,10 +12,21 @@ bills = list()
 @app.route('/index')
 @app.route('/index.html', methods=['get'])
 def index():
-    if request.method == 'POST':
-        sign_out()
+    if session.get('email') is None:
+        return redirect('login.html')
+    else:
+        if request.method == 'POST':
+            sign_out()
+        else:
+            email = session.get('email')
+            user_level = MANAGER._get_user_level(email)
+            print(user_level)
+            if user_level > 1:
+                return render_template('index.html', email=email, manage='')
+            else:
+                return render_template('index.html', email=email, manage='Manage Bills')
 
-    return render_template('index.html')
+        return render_template('index.html')
 
 @app.route('/signup', methods=['post', 'get'])
 @app.route('/signup.html', methods=['get'])
@@ -26,17 +37,22 @@ def signup():
         email_address = request.form.get('email_address')
         password = request.form.get('password')
 
-        try:
-            MANAGER.add_user(first_name, last_name, email_address, password)
-            sign_in(email_address)
+        check_email = MANAGER.check_email_availability(email_address)
+        print(check_email)
+        if check_email is None:
+            try:
+                MANAGER.add_user(first_name, last_name, email_address, password)
+                sign_in(email_address)
 
-        except RuntimeError as e:
-            print('Run Time Error: ', e)
-            return redirect('signup.html')
+            except RuntimeError as e:
+                print('Run Time Error: ', e)
+                return redirect('signup.html')
 
-        return render_template('index.html')
+            return redirect('index.html')
+        else:
+            return render_template('signup.html', valid='Email is already in use!')
     else:
-        return render_template('signup.html')
+            return render_template('signup.html')
 
 # logs a user in
 @app.route('/login', methods=['post', 'get'])
@@ -94,6 +110,12 @@ def add_bill():
     if request.method == 'GET':
         bills = MANAGER._get_bills()
         return render_template("manage.html", bills = bills)
+
+@app.route('/viewbills.html', methods=['get'])
+def view_bills():
+    bills = MANAGER._get_bills()
+    return render_template("viewbills.html", bills = bills)
+
 
 # signs a user in based on the email address
 # todo: add a time out

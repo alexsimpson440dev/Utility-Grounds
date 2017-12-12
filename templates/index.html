@@ -8,8 +8,9 @@
     <div class="container">
         <div class="header">
             <h2>Home</h2>
-            <a href="signup.html">signup</a>
-            <a href="manage.html">Manage Bills</a>
+            <h3>Hello {{ email }}!</h3>
+            <a href="manage.html">{{ manage }}</a>
+            <a href="viewbills.html">View Monthly Bills</a>
 
 
             <form action="/logout" method="POST">

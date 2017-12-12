@@ -23,7 +23,8 @@ class Database():
                      Column('first_name', String),
                      Column('last_name', String),
                      Column('email_address', String),
-                     Column('password', String)
+                     Column('password', String),
+                     Column('user_level', Integer)
                      )
         mapper(User, users)
         return users
@@ -92,5 +93,11 @@ class Database():
             counter+=1
 
         return bills_dict
+
+    def _check_user_level(self, email):
+        session = self._get_session()
+        for user in session.query(User.user_level)\
+                .filter(User.email_address == email):
+            return user.user_level
 
 

@@ -20,6 +20,10 @@ class DBManager():
         bill = Bills(date_added, electricity, gas, internet, city, total, due_date)
         self.database._add_bill(bill)
 
+    def check_email_availability(self, email):
+        email = self.database._validate_user_email(email)
+        return email
+
     # validates the users password against their email
     # by retrieving the hashed password, then checking
     # the password entered by the user
@@ -39,3 +43,7 @@ class DBManager():
     def _get_bills(self):
         bills = self.database._get_bills()
         return bills
+
+    def _get_user_level(self, email):
+        user_level = self.database._check_user_level(email)
+        return user_level

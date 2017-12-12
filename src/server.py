@@ -2,25 +2,30 @@ from src.dbManager import DBManager
 import os
 from flask import Flask, render_template, redirect, request, session, flash
 
+# sets manager class
 MANAGER = DBManager()
 
+# gets directories, sets a random app key
 app = Flask(__name__, '/static', static_folder='../static', template_folder='../templates')
 app.secret_key = os.urandom(24)
-bills = list()
 
+# calls index route
 @app.route('/')
 @app.route('/index')
 @app.route('/index.html', methods=['get'])
 def index():
+    # if the session is empty, then it sends the user to the login page
     if session.get('email') is None:
         return redirect('login.html')
+    # if the session is not empty, then the user can logout, check their bills, or manage the bills if its an admin
     else:
         if request.method == 'POST':
             sign_out()
         else:
+            # gets email associated with the session and the user_level that is associated with user
+            # (determines if admin or not
             email = session.get('email')
             user_level = MANAGER._get_user_level(email)
-            print(user_level)
             if user_level > 1:
                 return render_template('index.html', email=email, manage='')
             else:
@@ -28,17 +33,21 @@ def index():
 
         return render_template('index.html')
 
+# gets the signup route
 @app.route('/signup', methods=['post', 'get'])
 @app.route('/signup.html', methods=['get'])
 def signup():
+    # if the route is post, then the user clicked submit to add their user information
+    # todo: add more validation
     if request.method == 'POST':
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         email_address = request.form.get('email_address')
         password = request.form.get('password')
 
+        # checks if the email is in use
+        # if nothing is returned, then the email is available
         check_email = MANAGER.check_email_availability(email_address)
-        print(check_email)
         if check_email is None:
             try:
                 MANAGER.add_user(first_name, last_name, email_address, password)
@@ -49,6 +58,8 @@ def signup():
                 return redirect('signup.html')
 
             return redirect('index.html')
+        # if it is not available, a message will be displayed to the user
+        # todo: fix how the message is displayed
         else:
             return render_template('signup.html', valid='Email is already in use!')
     else:
@@ -111,6 +122,10 @@ def add_bill():
         bills = MANAGER._get_bills()
         return render_template("manage.html", bills = bills)
 
+# gets the view bills route
+# pulls from the database and puts the bills into a table
+# todo: divide by how many users are in the database, not including admins
+# todo: maybe make a groups table for pulling correct bills?
 @app.route('/viewbills.html', methods=['get'])
 def view_bills():
     bills = MANAGER._get_bills()
@@ -131,5 +146,6 @@ def sign_out():
     del session['email']
     return redirect('login.html')
 
+# runs application from the app.py file
 if __name__ == '__main__':
     app.run(port=9999, debug=True)

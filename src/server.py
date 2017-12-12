@@ -20,7 +20,10 @@ def index():
     # if the session is not empty, then the user can logout, check their bills, or manage the bills if its an admin
     else:
         if request.method == 'POST':
-            sign_out()
+            if session.get('email') is None:
+                return redirect('login.html')
+            else:
+                sign_out()
         else:
             # gets email associated with the session and the user_level that is associated with user
             # (determines if admin or not

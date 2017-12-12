@@ -40,10 +40,12 @@ class DBManager():
         hashedpw = bcrypt.hashpw(password, bcrypt.gensalt())
         return hashedpw
 
+    # retrieves bills from the database
     def _get_bills(self):
         bills = self.database._get_bills()
         return bills
 
+    # gets the users level from the database
     def _get_user_level(self, email):
         user_level = self.database._check_user_level(email)
         return user_level

@@ -16,7 +16,7 @@ class Database():
         self.engine = self._get_connection()
         METADATA.create_all(bind=self.engine)
 
-    # maps users table
+    # maps users table for sqlalchemy to its data model
     def _map_user(self):
         users = Table('Users', METADATA,
                      Column('user_id', Integer, primary_key=True),
@@ -29,6 +29,7 @@ class Database():
         mapper(User, users)
         return users
 
+    # maps bills table for sqlalchemy to its data model
     def _map_bills(self):
         bills = Table('Bills', METADATA,
                       Column('bill_id', Integer, primary_key=True),
@@ -65,7 +66,7 @@ class Database():
         session.add(bill)
         session.commit()
 
-    # queries for the users email
+    # queries for the users email, used to check for already existing email
     def _validate_user_email(self, email):
         session = self._get_session()
         for user in session.query(User)\
@@ -81,6 +82,9 @@ class Database():
             session.commit()
             return user.password
 
+    # gets the bills in the bills table
+    # takes the bills and places them in a list
+    # the list is then placed into a dictionary with a key that starts at one.
     def _get_bills(self):
         counter = 1
         bills_dict = dict()
@@ -92,8 +96,10 @@ class Database():
                 bills_dict.setdefault(counter, []).append(items)
             counter+=1
 
+        # returns the bills dictionary
         return bills_dict
 
+    # query that checks the users level based off of the email provided
     def _check_user_level(self, email):
         session = self._get_session()
         for user in session.query(User.user_level)\

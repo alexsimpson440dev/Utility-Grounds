@@ -77,7 +77,6 @@ def user_login():
         password = request.form.get('password')
         auth = MANAGER.auth_user(email_address, password)
         if auth is True:
-            print("login success")
             sign_in(email_address)
             return redirect("index.html")
         # if the credentials are wrong
@@ -136,13 +135,11 @@ def view_bills():
 # todo: add a time out
 def sign_in(email_address):
     session['email'] = email_address
-    print('signing in: ' + session['email'])
 
 # if the user chooses to sign out or gets timed out
 # the application will delete the session linked to the users email
-@app.route('/logout', methods=['post', 'get'])
+@app.route('/logout', methods=['post'])
 def sign_out():
-    print('signing out: ' + session['email'])
     del session['email']
     return redirect('login.html')
 

@@ -1,5 +1,6 @@
 # import sqlite3
 # todo: go to - https://www.pgadmin.org - for a postgres manager
+import os
 from os import environ
 from src.user import User
 from src.bills import Bills

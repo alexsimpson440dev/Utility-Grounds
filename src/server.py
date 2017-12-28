@@ -26,7 +26,7 @@ def index():
                 sign_out()
         else:
             # gets email associated with the session and the user_level that is associated with user
-            # (determines if admin or not
+            # determines if admin or not
             email = session.get('email')
             user_level = MANAGER._get_user_level(email)
             if user_level > 1:

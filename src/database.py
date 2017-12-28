@@ -5,6 +5,7 @@ from sqlalchemy import Table, MetaData, Column, Integer, Float, String, Date, Fo
 from sqlalchemy.orm import mapper, sessionmaker, relationship
 METADATA = MetaData()
 
+# todo: check to see if tables already exist before creating
 # Database Class
 class Database():
     # constructor, declares connection string within

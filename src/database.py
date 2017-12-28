@@ -6,6 +6,7 @@ from src.user import User
 from src.bills import Bills
 from sqlalchemy import Table, MetaData, Column, Integer, Float, String, Date, ForeignKey, create_engine
 from sqlalchemy.orm import mapper, sessionmaker, relationship
+
 METADATA = MetaData()
 DATABASE_URI = environ['DATABASE_URL']
 

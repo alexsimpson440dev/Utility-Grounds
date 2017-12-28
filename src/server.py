@@ -1,5 +1,7 @@
 from src.dbManager import DBManager
 import os
+import logging
+import sys
 from flask import Flask, render_template, redirect, request, session, flash
 
 # sets manager class
@@ -8,6 +10,10 @@ MANAGER = DBManager()
 # gets directories, sets a random app key
 app = Flask(__name__, '/static', static_folder='../static', template_folder='../templates')
 app.secret_key = os.urandom(24)
+
+# sets logger for heroku
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 
 # calls index route
 @app.route('/')

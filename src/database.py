@@ -1,14 +1,14 @@
 # import sqlite3
 # todo: go to - https://www.pgadmin.org - for a postgres manager
+
 import os
-from os import environ
 from src.user import User
 from src.bills import Bills
 from sqlalchemy import Table, MetaData, Column, Integer, Float, String, Date, ForeignKey, create_engine
 from sqlalchemy.orm import mapper, sessionmaker, relationship
 
 METADATA = MetaData()
-DATABASE_URI = environ['DATABASE_URL']
+DATABASE_URI = os.environ['DATABASE_URL']
 
 # todo: check to see if tables already exist before creating
 # Database Class

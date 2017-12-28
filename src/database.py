@@ -1,16 +1,20 @@
-import sqlite3
+# import sqlite3
+# todo: go to - https://www.pgadmin.org - for a postgres manager
+import os
+from os import environ
 from src.user import User
 from src.bills import Bills
 from sqlalchemy import Table, MetaData, Column, Integer, Float, String, Date, ForeignKey, create_engine
 from sqlalchemy.orm import mapper, sessionmaker, relationship
 METADATA = MetaData()
+DATABASE_URI = environ['DATABASE_URL']
 
 # todo: check to see if tables already exist before creating
 # Database Class
 class Database():
     # constructor, declares connection string within
     # sets sql_file, users, and engine
-    def __init__(self, connection_string="sqlite:///groundsDB.sqlite3"):
+    def __init__(self, connection_string=DATABASE_URI):
         self.sql_file = connection_string
         self.users = self._map_user()
         self.bills = self._map_bills()

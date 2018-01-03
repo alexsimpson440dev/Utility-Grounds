@@ -37,7 +37,7 @@ class DBManager():
 
     # hashes the users password using bcrypt
     def _hash_pw(self, password):
-        hashedpw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        hashedpw = bcrypt.hashpw(password, bcrypt.gensalt())
         hashedpw = hashedpw.decode('utf-8')
         return hashedpw
 

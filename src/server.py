@@ -78,6 +78,7 @@ def signup():
 @app.route('/login', methods=['post', 'get'])
 @app.route('/login.html', methods=['get'])
 def user_login():
+
     # gets users info from the html page
     # the server checks to see if the users credentials are correct
     # if auth is true the user will be signed in
@@ -86,8 +87,9 @@ def user_login():
         password = request.form.get('password')
         auth = MANAGER.auth_user(email_address, password)
         if auth is True:
-            sign_in(email_address)
+            session['email'] = email_address
             return redirect("index.html")
+
         # if the credentials are wrong
         # the user will be redirected back to the sign in page
         else:
@@ -139,11 +141,10 @@ def view_bills():
     bills = MANAGER._get_bills()
     return render_template("viewbills.html", bills = bills)
 
-
 # signs a user in based on the email address
 # todo: add a time out
-def sign_in(email_address):
-    session['email'] = email_address
+# def sign_in(email_address):
+    #session['email'] = email_address
 
 # if the user chooses to sign out or gets timed out
 # the application will delete the session linked to the users email

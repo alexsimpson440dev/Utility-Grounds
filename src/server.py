@@ -21,12 +21,12 @@ app.logger.setLevel(logging.ERROR)
 @app.route('/index.html', methods=['get'])
 def index():
     # if the session is empty, then it sends the user to the login page
-    if session.get('email') is None:
+    if 'email' not in session:
         return redirect('login.html')
     # if the session is not empty, then the user can logout, check their bills, or manage the bills if its an admin
     else:
         if request.method == 'POST':
-            if session.get('email') is None:
+            if 'email' not in session:
                 return redirect('login.html')
             else:
                 sign_out()
@@ -149,7 +149,7 @@ def sign_in(email_address):
 # the application will delete the session linked to the users email
 @app.route('/logout', methods=['post'])
 def sign_out():
-    del session['email']
+    session.pop('email', None)
     return redirect('login.html')
 
 # runs application from the app.py file

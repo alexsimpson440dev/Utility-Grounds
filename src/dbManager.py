@@ -29,7 +29,7 @@ class DBManager():
     # the password entered by the user
     def auth_user(self, email, password):
         hashedpassword = self.database._validate_user_password(email)
-        check = bcrypt.checkpw(password.encode('utf-8'), hashedpassword)
+        check = bcrypt.checkpw(password.decode('utf-8').encode('utf-8'), hashedpassword)
         if check is True:
             return True
         else:

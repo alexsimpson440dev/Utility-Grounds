@@ -9,7 +9,7 @@ MANAGER = DBManager()
 
 # gets directories, sets a random app key
 app = Flask(__name__, '/static', static_folder='../static', template_folder='../templates')
-app.secret_key = 'eagle talons were made by the diamond star motors company up until 1995. they were then made by mitsubishi america when chrysler sold out of the relationship'
+app.secret_key = os.environ['SECRET']
 
 # sets logger for heroku
 app.logger.addHandler(logging.StreamHandler(sys.stdout))

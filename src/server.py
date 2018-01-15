@@ -9,7 +9,7 @@ MANAGER = DBManager()
 
 # gets directories, sets a random app key
 app = Flask(__name__, '/static', static_folder='../static', template_folder='../templates')
-app.secret_key = os.urandom(24)
+app.secret_key = 'eagle talons were made by the diamond star motors company up until 1995. they were then made by mitsubishi america when chrysler sold out of the relationship'
 
 # sets logger for heroku
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
@@ -23,6 +23,7 @@ def index():
     # if the session is empty, then it sends the user to the login page
     if 'email' not in session:
         return redirect('login.html')
+
     # if the session is not empty, then the user can logout, check their bills, or manage the bills if its an admin
     else:
         if request.method == 'POST':
@@ -60,7 +61,8 @@ def signup():
         if check_email is None:
             try:
                 MANAGER.add_user(first_name, last_name, email_address, password)
-                sign_in(email_address)
+                session['email'] = email_address
+                return redirect('index.html')
 
             except RuntimeError as e:
                 print('Run Time Error: ', e)
@@ -78,7 +80,6 @@ def signup():
 @app.route('/login', methods=['post', 'get'])
 @app.route('/login.html', methods=['get'])
 def user_login():
-
     # gets users info from the html page
     # the server checks to see if the users credentials are correct
     # if auth is true the user will be signed in

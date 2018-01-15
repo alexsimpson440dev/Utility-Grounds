@@ -28,11 +28,14 @@ class DBManager():
     # by retrieving the hashed password, then checking
     # the password entered by the user
     def auth_user(self, email, password):
-        hashedpassword = self.database._validate_user_password(email)
-        check = bcrypt.checkpw(password.encode('utf-8'), hashedpassword.encode('utf-8'))
-        if check is True:
-            return True
-        else:
+        try:
+            hashedpassword = self.database._validate_user_password(email)
+            check = bcrypt.checkpw(password.encode('utf-8'), hashedpassword.encode('utf-8'))
+            if check is True:
+                return True
+            else:
+                return False
+        except AttributeError:
             return False
 
     # hashes the users password using bcrypt

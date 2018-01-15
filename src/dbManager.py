@@ -53,3 +53,8 @@ class DBManager():
     def _get_user_level(self, email):
         user_level = self.database._check_user_level(email)
         return user_level
+
+    # gets users name
+    def _get_name(self, email):
+        user_name = self.database._get_users_name(email)
+        return user_name

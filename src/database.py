@@ -112,4 +112,12 @@ class Database():
                 .filter(User.email_address == email):
             return user.user_level
 
+    # query that retrieves the users Names
+    def _get_users_name(self, email):
+        session = self._get_session()
+        for name in session.query(User.first_name, User.last_name)\
+                .filter(User.email_address == email):
+            usersName = name.first_name + ' ' + name.last_name
+            return usersName
+
 

@@ -35,11 +35,12 @@ def index():
             # gets email associated with the session and the user_level that is associated with user
             # determines if admin or not
             email = session.get('email')
+            user_name = MANAGER._get_name(email)
             user_level = MANAGER._get_user_level(email)
             if user_level > 1:
-                return render_template('index.html', email=email, manage='')
+                return render_template('index.html', user_name=user_name, manage='')
             else:
-                return render_template('index.html', email=email, manage='Manage Bills')
+                return render_template('index.html', user_name=user_name, manage='Manage Bills')
 
         return render_template('index.html')
 
@@ -131,7 +132,7 @@ def add_bill():
     # if the request method is post, the server will get the bills and add them to the html table
     if request.method == 'GET':
         bills = MANAGER._get_bills()
-        return render_template("manage.html", bills = bills)
+        return render_template("manage.html", bills=bills)
 
 # gets the view bills route
 # pulls from the database and puts the bills into a table

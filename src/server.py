@@ -2,6 +2,7 @@ from src.dbManager import DBManager
 import os
 import logging
 import sys
+from decimal import Decimal
 from flask import Flask, render_template, redirect, request, session, flash
 
 # sets manager class
@@ -105,34 +106,49 @@ def user_login():
 @app.route('/manage', methods=['post', 'get'])
 @app.route('/manage.html', methods=['get'])
 def add_bill():
-    # creates a bills list for testing. will add to database
-    # if post is requested, a bill will be added to the list
-    # else the bills will be retrieved
-    if request.method == 'POST':
-        date_added = request.form.get('date_added')
-        electricity = request.form.get('electricity')
-        gas = request.form.get('gas')
-        internet = request.form.get('internet')
-        city = request.form.get('city')
-        total = float(electricity) + float(gas) + float(internet) + float(city)
-        due_date = request.form.get('due_date')
+    # checks to see if the user is able to access the manager level
+    current_level = MANAGER._get_user_level(session['email'])
+    if current_level > 1:
+        return redirect('index.html')
+    else:
+        # creates a bills list for testing. will add to database
+        # if post is requested, a bill will be added to the list
+        # else the bills will be retrieved
+        if request.method == 'POST':
+            current_level = MANAGER._get_user_level(session['email'])
+            print(current_level)
+            date_added = request.form.get('date_added')
+            electricity = request.form.get('electricity')
+            gas = request.form.get('gas')
+            internet = request.form.get('internet')
+            city = request.form.get('city')
+            due_date = request.form.get('due_date')
 
-        # tries to add a bill to the database
-        # if it is a success, the bill will be added and the page will redirect back to the manage.html
-        # this will then show an updated view of the bills
-        try:
-            MANAGER.add_bill(date_added, electricity, gas, internet, city, total, due_date)
-            return redirect("manage.html")
+            # divides bills by the number of people
+            count = MANAGER._get_user_count()
+            electricity = round(Decimal(electricity) / Decimal(count), 2)
+            gas = round(Decimal(gas) / Decimal(count), 2)
+            internet = round(Decimal(internet) / Decimal(count), 2)
+            city = round(Decimal(city) / Decimal(count), 2)
 
-        # if the add fails, this will catch the error and redirect the user back to the manage.html page
-        except RuntimeError:
-            print('cannot add bill')
-            return redirect("manage.html")
+            # gets total
+            total = Decimal(electricity) + Decimal(gas) + Decimal(internet) + Decimal(city)
+            # tries to add a bill to the database
+            # if it is a success, the bill will be added and the page will redirect back to the manage.html
+            # this will then show an updated view of the bills
+            try:
+                MANAGER.add_bill(date_added, electricity, gas, internet, city, total, due_date)
+                return redirect("manage.html")
 
-    # if the request method is post, the server will get the bills and add them to the html table
-    if request.method == 'GET':
-        bills = MANAGER._get_bills()
-        return render_template("manage.html", bills=bills)
+            # if the add fails, this will catch the error and redirect the user back to the manage.html page
+            except RuntimeError:
+                print('cannot add bill')
+                return redirect("manage.html")
+
+        # if the request method is post, the server will get the bills and add them to the html table
+        if request.method == 'GET':
+            bills = MANAGER._get_bills()
+            return render_template("manage.html", bills=bills)
 
 # gets the view bills route
 # pulls from the database and puts the bills into a table

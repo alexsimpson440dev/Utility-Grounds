@@ -58,3 +58,7 @@ class DBManager():
     def _get_name(self, email):
         user_name = self.database._get_users_name(email)
         return user_name
+
+    def _get_user_count(self):
+        count = self.database._count_users()
+        return count

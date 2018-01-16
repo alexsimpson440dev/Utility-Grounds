@@ -123,4 +123,12 @@ class Database():
                 usersName = name.first_name + ' ' + name.last_name
                 return usersName
 
+    # counts users in DB with level 3 access
+    def _count_users(self):
+        session = self._get_session()
+        counter = 0
+        for users in session.query(User)\
+                .filter(User.user_level == 3):
+            counter += 1
+        return counter
 

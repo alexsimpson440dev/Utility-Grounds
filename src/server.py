@@ -108,7 +108,7 @@ def user_login():
 def add_bill():
     # checks to see if session is available
     if check_session() is False:
-            return redirect('index.html')
+            return redirect('login.html')
     else:
         # checks to see if the user is able to access the manager level
         current_level = MANAGER._get_user_level(session['email'])

@@ -106,11 +106,15 @@ def user_login():
 @app.route('/manage', methods=['post', 'get'])
 @app.route('/manage.html', methods=['get'])
 def add_bill():
-    # checks to see if the user is able to access the manager level
-    current_level = MANAGER._get_user_level(session['email'])
-    if current_level > 1:
-        return redirect('index.html')
+    # checks to see if session is available
+    if check_session() is False:
+            return redirect('index.html')
     else:
+        # checks to see if the user is able to access the manager level
+        current_level = MANAGER._get_user_level(session['email'])
+        if current_level > 1:
+            return redirect('index.html')
+
         # creates a bills list for testing. will add to database
         # if post is requested, a bill will be added to the list
         # else the bills will be retrieved
@@ -170,6 +174,12 @@ def view_bills():
 def sign_out():
     session.pop('email', None)
     return redirect('login.html')
+
+def check_session():
+    if 'email' in session:
+        return True
+    else:
+        return False
 
 # runs application from the app.py file
 if __name__ == '__main__':

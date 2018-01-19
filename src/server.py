@@ -70,7 +70,6 @@ def signup():
                 print('Run Time Error: ', e)
                 return redirect('signup.html')
 
-            return redirect('index.html')
         # if it is not available, a message will be displayed to the user
         # todo: fix how the message is displayed
         else:
@@ -128,15 +127,9 @@ def add_bill():
             city = request.form.get('city')
             due_date = request.form.get('due_date')
 
-            # divides bills by the number of people
-            count = MANAGER._get_user_count()
-            electricity = round(Decimal(electricity) / Decimal(count), 2)
-            gas = round(Decimal(gas) / Decimal(count), 2)
-            internet = round(Decimal(internet) / Decimal(count), 2)
-            city = round(Decimal(city) / Decimal(count), 2)
-
             # gets total
             total = Decimal(electricity) + Decimal(gas) + Decimal(internet) + Decimal(city)
+
             # tries to add a bill to the database
             # if it is a success, the bill will be added and the page will redirect back to the manage.html
             # this will then show an updated view of the bills
@@ -165,6 +158,7 @@ def view_bills():
 
 # signs a user in based on the email address
 # todo: add a time out
+
 # def sign_in(email_address):
     #session['email'] = email_address
 

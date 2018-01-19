@@ -2,6 +2,7 @@
 # todo: go to - https://www.pgadmin.org - for a postgres manager
 
 import os
+from decimal import Decimal
 from src.user import User
 from src.bills import Bills
 from sqlalchemy import Table, MetaData, Column, Integer, Float, String, Date, ForeignKey, create_engine
@@ -92,12 +93,13 @@ class Database():
     # takes the bills and places them in a list
     # the list is then placed into a dictionary with a key that starts at one.
     def _get_bills(self):
+        user_count = self._count_users()
         counter = 1
         bills_dict = dict()
         session = self._get_session()
         for bid, da, e, g, i, c, t, dd in session.query(Bills.bill_id, Bills.date_added, Bills.electricity, Bills.gas, Bills.internet,
                                    Bills.city, Bills.total, Bills.due_date):
-            loop_list = [da, e, g, i, c, t, dd]
+            loop_list = [da, e, g, i, c, round(Decimal(t)/Decimal(user_count), 2), dd]
             for items in loop_list:
                 bills_dict.setdefault(counter, []).append(items)
             counter+=1

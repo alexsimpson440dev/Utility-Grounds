@@ -16,8 +16,8 @@ class DBManager():
         self.database._add_user(user)
 
     # adds a bill to the database from html
-    def add_bill(self, date_added, electricity, gas, internet, city, total, due_date):
-        bill = Bills(date_added, electricity, gas, internet, city, total, due_date)
+    def add_bill(self, date_added, electricity, gas, internet, city, total_per_user, total, due_date):
+        bill = Bills(date_added, electricity, gas, internet, city, total_per_user, total, due_date)
         self.database._add_bill(bill)
 
     def check_email_availability(self, email):

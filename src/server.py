@@ -118,8 +118,8 @@ def add_bill():
         # if post is requested, a bill will be added to the list
         # else the bills will be retrieved
         if request.method == 'POST':
-            current_level = MANAGER._get_user_level(session['email'])
-            print(current_level)
+            user_count = MANAGER._get_user_count()
+
             date_added = request.form.get('date_added')
             electricity = request.form.get('electricity')
             gas = request.form.get('gas')
@@ -127,14 +127,15 @@ def add_bill():
             city = request.form.get('city')
             due_date = request.form.get('due_date')
 
-            # gets total
+            # gets totals
             total = Decimal(electricity) + Decimal(gas) + Decimal(internet) + Decimal(city)
+            total_per_user = round(Decimal(total)/Decimal(user_count), 2)
 
             # tries to add a bill to the database
             # if it is a success, the bill will be added and the page will redirect back to the manage.html
             # this will then show an updated view of the bills
             try:
-                MANAGER.add_bill(date_added, electricity, gas, internet, city, total, due_date)
+                MANAGER.add_bill(date_added, electricity, gas, internet, city, total_per_user, total, due_date)
                 return redirect("manage.html")
 
             # if the add fails, this will catch the error and redirect the user back to the manage.html page

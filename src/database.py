@@ -45,6 +45,7 @@ class Database():
                       Column('gas', Float),
                       Column('internet', Float),
                       Column('city', Float),
+                      Column('total_per_user', Float),
                       Column('total', Float),
                       Column('due_date', String)
                       )
@@ -97,9 +98,9 @@ class Database():
         counter = 1
         bills_dict = dict()
         session = self._get_session()
-        for bid, da, e, g, i, c, t, dd in session.query(Bills.bill_id, Bills.date_added, Bills.electricity, Bills.gas, Bills.internet,
-                                   Bills.city, Bills.total, Bills.due_date):
-            loop_list = [da, e, g, i, c, round(Decimal(t)/Decimal(user_count), 2), dd]
+        for bid, da, e, g, i, c, tpu, t, dd in session.query(Bills.bill_id, Bills.date_added, Bills.electricity, Bills.gas, Bills.internet,
+                                   Bills.city, Bills.total_per_user, Bills.total, Bills.due_date):
+            loop_list = [da, e, g, i, c, tpu, t, dd]
             for items in loop_list:
                 bills_dict.setdefault(counter, []).append(items)
             counter+=1

@@ -150,7 +150,6 @@ def add_bill():
 
 # gets the view bills route
 # pulls from the database and puts the bills into a table
-# todo: divide by how many users are in the database, not including admins
 # todo: maybe make a groups table for pulling correct bills?
 @app.route('/viewbills.html', methods=['get'])
 def view_bills():

@@ -4,6 +4,8 @@ tr:hover {
 }
 
 td a {
+    padding: 8px;
+    height: 100%;
     display: block;
 }
 
@@ -13,7 +15,7 @@ table {
 }
 
 th, td {
-    padding: 8px;
+    padding: 0;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }

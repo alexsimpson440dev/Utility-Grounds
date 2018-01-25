@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="../static/main.css" rel="stylesheet" type="text/css" />
     <title>Manage</title>
 </head>
 <body>
@@ -27,21 +28,21 @@
         <button type="submit" name="submit_bill">Submit</button>
     </form>
         <br>
-        <table style="border: 1px solid black">
-            <tr>
-                <th style="border: 1px solid black">Date Added</th>
-                <th style="border: 1px solid black">Electricity</th>
-                <th style="border: 1px solid black">Gas</th>
-                <th style="border: 1px solid black">Internet</th>
-                <th style="border: 1px solid black">City</th>
-                <th style="border: 1px solid black">Total Per User</th>
-                <th style="border: 1px solid black">Total</th>
-                <th style="border: 1px solid black">Due Date</th>
+        <table>
+            <tr style="background-color: white">
+                <th>Date Added</th>
+                <th>Electricity</th>
+                <th>Gas</th>
+                <th>Internet</th>
+                <th>City</th>
+                <th>Total Per User</th>
+                <th>Total</th>
+                <th>Due Date</th>
             </tr>
                     {% for key in bills %}
                         <tr>
                         {% for value in bills[key] %}
-                            <td style="border: 1px solid black">{{value}}</td>
+                            <td><a href="/viewbills.html">{{value}}</a></td>
                         {% endfor %}
                         </tr>
                     {% endfor %}

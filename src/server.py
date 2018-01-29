@@ -154,7 +154,28 @@ def add_bill():
 @app.route('/viewbills.html', methods=['get'])
 def view_bills():
     bills = MANAGER._get_bills()
-    return render_template("viewbills.html", bills = bills)
+    return render_template("viewbills.html", bills=bills)
+
+#gets the pay bills route
+#gets the information from clicked bill to display
+@app.route('/paybill', methods=['get'])
+@app.route('/paybill.html', methods=['get'])
+def pay_bills():
+    bills = MANAGER._get_bills()
+    bill_clicked = int(request.args.get('bill'))
+    bill = bills[bill_clicked]
+
+    DA = bill.pop(0)
+    E = bill.pop(0)
+    G = bill.pop(0)
+    I = bill.pop(0)
+    C = bill.pop(0)
+    TPU = bill.pop(0)
+    T = bill.pop(0)
+    DD = bill.pop(0)
+
+    return render_template("paybill.html", DA=DA, E=E, G=G, I=I, C=C, TPU=TPU, T=T, DD=DD)
+
 
 # signs a user in based on the email address
 # todo: add a time out

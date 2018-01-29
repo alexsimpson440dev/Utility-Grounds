@@ -6,7 +6,6 @@
     <title>View Bills</title>
 </head>
 <body>
-        <form style="background-color: white; padding: 8px">
         <table>
             <tr style="background-color: white">
                 <th>Date Added</th>
@@ -18,25 +17,19 @@
                 <th>Total</th>
                 <th>Due Date</th>
             </tr>
-
                     {% for key in bills %}
                         <tr>
                         {% for value in bills[key] %}
-                            <td><a href="/viewbills.html">{{value}}</a></td>
+                            <td>
+                                <form action="/paybill" method="get">
+                                    <input type="hidden" name="bill" value="{{key}}">
+                                    <input type="submit" value="{{value}}">
+                                </form>
+                            </td>
                         {% endfor %}
                         </tr>
                     {% endfor %}
         </table>
-        </form>
 
-
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-
-        <input type="hidden" name="cmd" value="_s-xclick">
-        <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
-        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-
-        </form>
 </body>
 </html>

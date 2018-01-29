@@ -2,6 +2,9 @@
 tr:hover {
     background: blanchedalmond;
 }
+th {
+    padding-left: 100%;
+}
 
 td a {
     padding: 8px;
@@ -44,4 +47,14 @@ a:active {
     color: black;
     background-color: transparent;
     text-decoration: none;
+}
+
+input[type="submit"]{
+    width: 100%;
+    outline: 0;
+    cursor: pointer;
+    background: none;
+    padding: 8px;
+    font: inherit;
+    border: none;
 }

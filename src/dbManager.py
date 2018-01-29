@@ -49,6 +49,11 @@ class DBManager():
         bills = self.database._get_bills()
         return bills
 
+    # retrieves billID from database
+    def _get_billID(self, date_added):
+        billID = self.database._get_billID(date_added)
+        return billID
+
     # gets the users level from the database
     def _get_user_level(self, email):
         user_level = self.database._check_user_level(email)

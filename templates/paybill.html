@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="../static/main.css" rel="stylesheet" type="text/css" />
+    <title>Pay Bill</title>
+</head>
+<body>
+    <table>
+        <tr style="background-color: white; padding: 8px">
+            <th>Bill Breakdown</th>
+        </tr>
+        <tr>
+            <td>Date Added</td>
+            <td>{{DA}}</td>
+        </tr>
+        <tr>
+            <td>Electricity</td>
+            <td>{{E}}</td>
+        </tr>
+        <tr>
+            <td>Gas</td>
+            <td>{{G}}</td>
+        </tr>
+        <tr>
+            <td>Internet</td>
+            <td>{{I}}</td>
+        </tr>
+        <tr>
+            <td>City</td>
+            <td>{{C}}</td>
+        </tr>
+        <tr>
+            <td>Total Per User</td>
+            <td>{{TPU}}</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td>{{T}}</td>
+        </tr>
+        <tr>
+            <td>Due Date</td>
+            <td>{{DD}}</td>
+        </tr>
+    </table>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+
+  <!-- Identify your business so that you can collect the payments. -->
+  <input type="hidden" name="business" value="alexsimpson440@gmail.com">
+
+  <!-- Specify a Buy Now button. -->
+  <input type="hidden" name="cmd" value="_xclick">
+
+  <!-- Specify details about the item that buyers will purchase. -->
+  <input type="hidden" name="item_name" value="Pay Utility Bill from {{DA}}">
+  <input type="hidden" name="amount" value="{{TPU}}">
+  <input type="hidden" name="currency_code" value="USD">
+
+  <!-- Display the payment button. -->
+  <input type="image" name="submit" border="0"
+  src="https://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif"
+  alt="Buy Now">
+  <img alt="" border="0" width="1" height="1"
+  src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+
+</form>
+
+</body>
+</html>

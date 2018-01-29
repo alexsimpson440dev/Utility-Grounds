@@ -108,6 +108,13 @@ class Database():
         # returns the bills dictionary
         return bills_dict
 
+    # query that gets the bill_id via date added
+    def _get_billID(self, date_added):
+        session = self._get_session()
+        for id in session.query(Bills.bill_id)\
+                .filter(Bills.date_added == date_added):
+            return id.bill_id
+
     # query that checks the users level based off of the email provided
     def _check_user_level(self, email):
         session = self._get_session()

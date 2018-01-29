@@ -54,7 +54,7 @@ class Database():
 
     # gets connection through sqlalchemy with the sql_file connection string
     def _get_connection(self):
-        engine = create_engine(self.sql_file)
+        engine = create_engine(self.sql_file, pool_size=20, max_overflow=0)
         return engine
 
     # gets the session with the session maker

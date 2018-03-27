@@ -3,7 +3,12 @@ import os
 import logging
 import sys
 from decimal import Decimal
-from flask import Flask, render_template, redirect, request, session, flash
+from datetime import timedelta
+import random
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from flask import Flask, render_template, redirect, request, session, flash, url_for
 
 # sets manager class
 MANAGER = DBManager()
@@ -23,13 +28,13 @@ app.logger.setLevel(logging.ERROR)
 def index():
     # if the session is empty, then it sends the user to the login page
     if 'email' not in session:
-        return redirect('login.html')
+        return redirect(url_for('login'))
 
     # if the session is not empty, then the user can logout, check their bills, or manage the bills if its an admin
     else:
         if request.method == 'POST':
             if 'email' not in session:
-                return redirect('login.html')
+                return redirect(url_for('login'))
             else:
                 sign_out()
         else:
@@ -43,7 +48,7 @@ def index():
             else:
                 return render_template('index.html', user_name=user_name, manage='Manage Bills')
 
-        return render_template('index.html')
+        return render_template(url_for('index'))
 
 # gets the signup route
 @app.route('/signup', methods=['post', 'get'])
@@ -51,6 +56,9 @@ def index():
 def signup():
     # if the route is post, then the user clicked submit to add their user information
     # todo: add more validation
+    session['token'] = random.randint(100000, 999999)
+    _send_email()
+    print(session['token'])
     if request.method == 'POST':
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
@@ -64,23 +72,23 @@ def signup():
             try:
                 MANAGER.add_user(first_name, last_name, email_address, password)
                 session['email'] = email_address
-                return redirect('index.html')
+                return redirect(url_for('index'))
 
             except RuntimeError as e:
                 print('Run Time Error: ', e)
-                return redirect('signup.html')
+                return redirect(url_for('signup'))
 
         # if it is not available, a message will be displayed to the user
         # todo: fix how the message is displayed
         else:
             return render_template('signup.html', valid='Email is already in use!')
     else:
-            return render_template('signup.html')
+            return render_template(url_for('signup'))
 
 # logs a user in
 @app.route('/login', methods=['post', 'get'])
 @app.route('/login.html', methods=['get'])
-def user_login():
+def login():
     # gets users info from the html page
     # the server checks to see if the users credentials are correct
     # if auth is true the user will be signed in
@@ -90,16 +98,16 @@ def user_login():
         auth = MANAGER.auth_user(email_address, password)
         if auth is True:
             session['email'] = email_address
-            return redirect("index.html")
+            return redirect(url_for('index'))
 
         # if the credentials are wrong
         # the user will be redirected back to the sign in page
         else:
             flash('email or password is incorrect')
-            return redirect("login.html")
+            return redirect(url_for('login'))
 
     else:
-        return render_template("login.html")
+        return render_template(url_for('login'))
 
 # adding bills
 @app.route('/manage', methods=['post', 'get'])
@@ -107,12 +115,12 @@ def user_login():
 def add_bill():
     # checks to see if session is available
     if check_session() is False:
-            return redirect('login.html')
+            return redirect(url_for('login'))
     else:
         # checks to see if the user is able to access the manager level
-        current_level = MANAGER._get_user_level(session['email'])
-        if current_level > 1:
-            return redirect('index.html')
+        user_level = MANAGER._get_user_level(session['email'])
+        if user_level > 1:
+            return redirect(url_for('index'))
 
         # creates a bills list for testing. will add to database
         # if post is requested, a bill will be added to the list
@@ -127,7 +135,11 @@ def add_bill():
             city = request.form.get('city')
             due_date = request.form.get('due_date')
 
-            # gets totals
+            # reject a divide by zero error
+            if user_count is 0:
+                user_count = 1
+
+            # sets the totals for bills
             total = Decimal(electricity) + Decimal(gas) + Decimal(internet) + Decimal(city)
             total_per_user = round(Decimal(total)/Decimal(user_count), 2)
 
@@ -136,12 +148,12 @@ def add_bill():
             # this will then show an updated view of the bills
             try:
                 MANAGER.add_bill(date_added, electricity, gas, internet, city, total_per_user, total, due_date)
-                return redirect("manage.html")
+                return redirect(url_for('add_bill'))
 
             # if the add fails, this will catch the error and redirect the user back to the manage.html page
             except RuntimeError:
                 print('cannot add bill')
-                return redirect("manage.html")
+                return redirect(url_for('add_bill'))
 
         # if the request method is post, the server will get the bills and add them to the html table
         if request.method == 'GET':
@@ -161,6 +173,10 @@ def view_bills():
 @app.route('/paybill', methods=['get'])
 @app.route('/paybill.html', methods=['get'])
 def pay_bills():
+    # checks user level, if it is 3 then it will display the bill
+    # if it is not a 3, then the manager can edit the bill
+    user_level = MANAGER._get_user_level(session['email'])
+    print(user_level)
     bills = MANAGER._get_bills()
     bill_clicked = int(request.args.get('bill'))
     bill = bills[bill_clicked]
@@ -174,7 +190,26 @@ def pay_bills():
     T = bill.pop(0)
     DD = bill.pop(0)
 
-    return render_template("paybill.html", DA=DA, E=E, G=G, I=I, C=C, TPU=TPU, T=T, DD=DD)
+    if user_level == 1:
+        return redirect(url_for('update_bill'))
+
+    else:
+        return render_template("paybill.html", DA=DA, E=E, G=G, I=I, C=C, TPU=TPU, T=T, DD=DD)
+
+# opens update bill template
+@app.route('/updatebill', methods=['get'])
+@app.route('/updatebill.html', methods=['get'])
+def update_bill():
+    # checks if session is available. If not, the user will be redirected
+    if check_session() is False:
+        return redirect(url_for('login'))
+
+    # if the session is available, see if the user has access. If so, go to update bill. If not, go back to index
+    if MANAGER._get_user_level(session['email']) == 1:
+        return render_template('updatebill.html')
+
+    else:
+        return redirect(url_for('index'))
 
 
 # signs a user in based on the email address
@@ -188,13 +223,31 @@ def pay_bills():
 @app.route('/logout', methods=['post'])
 def sign_out():
     session.pop('email', None)
-    return redirect('login.html')
+    return redirect(url_for('login'))
 
 def check_session():
     if 'email' in session:
         return True
     else:
         return False
+
+def _send_email():
+    from_email = "alexsimpson440dev@gmail.com"
+    to_email = "alexsimpson440@gmail.com"
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = "Utility-Grounds Manager Token"
+
+    body = "Your new Manager Sign-Up token is, " + str(session['token'])
+    msg.attach(MIMEText(body, 'plain'))
+
+    email_server = smtplib.SMTP('smtp.gmail.com', 587)
+    email_server.starttls()
+    email_server.login(from_email, "apple440")
+    text = msg.as_string()
+    email_server.sendmail(from_email, to_email, text)
+    email_server.quit()
 
 # runs application from the app.py file
 if __name__ == '__main__':

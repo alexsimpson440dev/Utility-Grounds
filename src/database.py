@@ -67,12 +67,14 @@ class Database():
         session = self._get_session()
         session.add(user)
         session.commit()
+        session.close()
 
     # adds a new bill to the database
     def _add_bill(self, bill):
         session = self._get_session()
         session.add(bill)
         session.commit()
+        session.close()
 
     # queries for the users email, used to check for already existing email
     def _validate_user_email(self, email):
@@ -80,7 +82,9 @@ class Database():
         for user in session.query(User)\
                 .filter(User.email_address == email):
             session.commit()
-            return user.email_address
+            e_address = user.email_address
+            session.close()
+            return e_address
 
     # queries for the users password
     def _validate_user_password(self, email):
@@ -88,7 +92,9 @@ class Database():
         for user in session.query(User)\
                 .filter(User.email_address == email):
             session.commit()
-            return user.password
+            pw = user.password
+            session.close()
+            return pw
 
     # gets the bills in the bills table
     # takes the bills and places them in a list
@@ -105,6 +111,7 @@ class Database():
                 bills_dict.setdefault(counter, []).append(items)
             counter+=1
 
+        session.close()
         # returns the bills dictionary
         return bills_dict
 
@@ -113,14 +120,18 @@ class Database():
         session = self._get_session()
         for id in session.query(Bills.bill_id)\
                 .filter(Bills.date_added == date_added):
-            return id.bill_id
+            bill = id.bill_id
+            session.close()
+            return bill
 
     # query that checks the users level based off of the email provided
     def _check_user_level(self, email):
         session = self._get_session()
         for user in session.query(User.user_level)\
                 .filter(User.email_address == email):
-            return user.user_level
+            UL = user.user_level
+            session.close()
+            return UL
 
     # query that retrieves the users Names
     def _get_users_name(self, email):
@@ -128,8 +139,10 @@ class Database():
         for name in session.query(User.first_name, User.last_name, User.user_level)\
                 .filter(User.email_address == email):
             if name.user_level == 1:
+                session.close()
                 return "Admin"
             else:
+                session.close()
                 usersName = name.first_name + ' ' + name.last_name
                 return usersName
 
@@ -140,5 +153,6 @@ class Database():
         for users in session.query(User)\
                 .filter(User.user_level == 3):
             counter += 1
+        session.close()
         return counter
 

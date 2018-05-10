@@ -244,7 +244,7 @@ def _send_email():
 
     email_server = smtplib.SMTP('smtp.gmail.com', 587)
     email_server.starttls()
-    email_server.login(from_email, "apple440")
+    email_server.login(from_email, "inputpassword")
     text = msg.as_string()
     email_server.sendmail(from_email, to_email, text)
     email_server.quit()
